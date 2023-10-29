@@ -32,7 +32,6 @@ int main() {
             strength = cycle * X;
 
             if (addToTotal(cycle) == 1)  {
-                printf("Strength at cycle %d: %d\n", cycle, strength);
                 totalStrength += strength;
             }
 
@@ -49,7 +48,6 @@ int main() {
                     X += amount;
                 }
             }
-            printf("Strength at cycle %d: %d\n", cycle, strength);
         }
 
         if (addToTotal(cycle) == 1)  {
@@ -66,7 +64,6 @@ int main() {
 int addToTotal(int cycle) {
 
     if ((cycle == 20) || ((cycle - 20) % 40 == 0)) {
-        printf("Adding to total at cycle %d: ", cycle);
         return 1;
     }
 
