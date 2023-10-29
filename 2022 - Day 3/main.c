@@ -2,46 +2,46 @@
 #include <stdio.h>
 #include <strings.h>
 
+int getPriority(char item) {
+    if ((int)item >= 65 && item <= 90) {
+        return ((int)item - 38);
+    } else if ((int)item >= 97 && item <= 122) {
+        return ((int)item - 96);
+    }
+    return 0;
+}
+
 int main() {
 
     FILE *fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 3\\input.txt", "r");
 
-    char line[100];
-    int length;
-    int half;
+    char line1[100], line2[100], line3[100];
+    int lineSize = sizeof(line1);
     long total = 0;
+    int count = 1;
 
-    while(fgets(line, sizeof(line), fptr)) {
-        if (line[0] == '\n') break;
+    while(fgets(line1, lineSize, fptr)) {
 
-        length = strlen(line);
+        if (line1[0] == '\n') break;
 
-        half = length / 2;
+        fgets(line2, lineSize, fptr);
+        fgets(line3, lineSize, fptr);
 
-        char first[half + 1], second[half + 1]; // +1 for null termination...otherwise it's not a string
+        for (int i = 0; i < strlen(line1); i++) {
 
-        for (int j = 0; j < half; j++) {
-            first[j] = line[j];
-            second[j] = line[j + half];
-        }
-
-        first[half] = second[half] = '\0'; // Make into string
-
-        for (int k = 0; k < half; k++) {
-            if (strchr(first, second[k]) != NULL) {
-                printf("Contains same character: %c ", second[k]);
-
-                if ((int)second[k] >= 65 && second[k] <= 90) {
-                    total += ((int)second[k] - 38);
-                } else if ((int)second[k] >= 97 && second[k] <= 122) {
-                    total += ((int)second[k] - 96);
+            if (strchr(line2, line1[i])) {
+                if (strchr(line3, line1[i])) {
+                    total += getPriority(line1[i]);
+                    printf("Group %d badge: %c\n", count, line1[i]);
+                    break;
                 }
-                printf("Total: %ld\n", total);
-                break;
             }
         }
 
+        count++;
     }
+
+    printf("%ld", total);
 
     return 0;
 }
