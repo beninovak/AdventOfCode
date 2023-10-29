@@ -18,30 +18,52 @@ int main() {
         player1 = line[0];
         player2 = line[2];
 
-        if (player2 == 'X') {
+        if (player1 == 'A') {
 
-            score += 1;
-            if (player1 == 'A') {
-                score += 3;
-            } else if (player1 == 'C') {
-                score += 6;
+            switch (player2) {
+                case 'X':
+                    score += 3;
+                    break;
+
+                case 'Y':
+                    score += 4;
+                    break;
+
+                case 'Z':
+                    score += 8;
+                    break;
             }
-        } else if (player2 == 'Y') {
 
-            score += 2;
-            if (player1 == 'A') {
-                score += 6;
-            } else if (player1 == 'B') {
-                score += 3;
+        } else if (player1 == 'B') {
+
+            switch (player2) {
+                case 'X':
+                    score += 1;
+                    break;
+
+                case 'Y':
+                    score += 5;
+                    break;
+
+                case 'Z':
+                    score += 9;
+                    break;
             }
 
-        } else if (player2 == 'Z') {
+        } else if (player1 == 'C') {
 
-            score += 3;
-            if (player1 == 'B') {
-                score += 6;
-            } else if (player1 == 'C') {
-                score += 3;
+            switch (player2) {
+                case 'X':
+                    score += 2;
+                    break;
+
+                case 'Y':
+                    score += 6;
+                    break;
+
+                case 'Z':
+                    score += 7;
+                    break;
             }
         }
     }
