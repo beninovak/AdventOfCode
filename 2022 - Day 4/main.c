@@ -30,10 +30,14 @@ int main() {
         elf2 = strtok(NULL, "-");
         elf2max = atoi(elf2);
 
-        if ((elf1min >= elf2min && elf1max <= elf2max) ||
-            (elf2min >= elf1min && elf2max <= elf1max)) {
+        if ((elf1min >= elf2min && elf1min <= elf2max) ||
+            (elf1max >= elf2min && elf1max <= elf2max)) {
             overlappingPairs++;
             printf(" - Overlapping pairs so far: %d\n", overlappingPairs);
+        } else if (
+            (elf2min >= elf1min && elf2min <= elf1max) ||
+            (elf2max >= elf1min && elf2max <= elf1max)) {
+            overlappingPairs++;
         }
     }
 
