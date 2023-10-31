@@ -68,7 +68,7 @@ int main() {
 
         arrayShiftRight(matrix[stackToMoveTo], matrixRowSize, moveQuantity);
         for (int i = 0; i < moveQuantity; i++) {
-            matrix[stackToMoveTo][moveQuantity - 1 - i] = matrix[stackToMoveFrom][i];
+            matrix[stackToMoveTo][i] = matrix[stackToMoveFrom][i];
         }
         arrayShiftLeft(matrix[stackToMoveFrom], matrixRowSize, moveQuantity);
 
@@ -79,6 +79,9 @@ int main() {
     }
 
     printf("Top crates are: %s", finalString);
+
+    // Part 1 result: SBPQRSCDF
+    // Part 2 result: RGLVRCQSB
 
     return 0;
 }
