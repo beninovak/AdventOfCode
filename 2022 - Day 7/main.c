@@ -114,7 +114,6 @@ int main() {
         }
     }
 
-    forEach(directories, printDirectory);
     fflush(stdout);
     getFileSize(directories->first->value);
 
@@ -129,7 +128,27 @@ int main() {
         lastNode = lastNode->next;
     }
 
-    printf("Total file size, ja: %lld", dirFileSize);
+    long long maxSize = 70000000;
+    long long requiredSize = 30000000;
+    long long usedSize = ((directory*)directories->first->value)->size;
+    long long availableSize = maxSize - usedSize;
+    long long neededSize = requiredSize - availableSize;
+
+    long long previousMinSize = maxSize;
+
+    lastNode = directories->first;
+    while (lastNode != NULL) {
+
+        long long size = ((directory*)lastNode->value)->size;
+        if (size < previousMinSize && size >= neededSize) {
+            previousMinSize = size;
+        }
+        lastNode = lastNode->next;
+    }
+
+    printf("Root file size, ja: %lld\n", usedSize);
+    printf("Available file size, ja: %lld\n", availableSize);
+    printf("Needed file size, ja: %lld\n", previousMinSize);
 
     return 0;
 }
