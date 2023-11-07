@@ -43,9 +43,7 @@ void* valueAtIndex(list* list, int index) {
 void forEach(list* list, void(*func)(void*)) {
 
     listNode* lastNode = list->first;
-
     while (lastNode != NULL) {
-
         func(lastNode->value);
         lastNode = lastNode->next;
     }

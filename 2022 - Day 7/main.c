@@ -16,7 +16,6 @@ typedef struct _directory {
     struct _directory *parentDirectory;
 } directory;
 
-
 void printDirectory(void* value) {
     directory* dir = (directory*)value;
     printf("%s: \n", dir->name);
@@ -106,7 +105,7 @@ int main() {
             addToList(currentDirectory->childDirs, newDir);
             addToList(directories, newDir);
         } else {
-            file *newFile = calloc(1, sizeof(file));
+            file* newFile = calloc(1, sizeof(file));
             newFile->size = atoll(token);
             token = strtok(NULL, " \n");
             newFile->name = token;
