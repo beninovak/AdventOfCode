@@ -35,88 +35,71 @@ int main() {
         }
     }
 
-    int isVisible;
-    int visibleTrees = (2 * (columns - 1)) + (2 * (rows - 2));
+    int viewDistance;
+    int currentScenicScore = 1;
+    int maxScenicScore = 1;
 
     // Start at second row, end on penultimate row
-    for (int i = 1; i < rows - 1; i++) {
+    for (int i = 2; i < rows - 1; i++) {
         // Don't check first and last column
-        for (int j = 1; j < columns - 2; j++) {
+        for (int j = 4; j < columns - 2; j++) {
 
-            isVisible = 1;
+            viewDistance = 0;
+            currentScenicScore = 1;
 
             // Check left
-            for (int k = 0; k < j; k++) {
+            for (int k = j - 1; k >= 0; k--) {
+                viewDistance++;
                 if (matrix[i][k] >= matrix[i][j]) {
-                    isVisible = 0;
                     break;
                 }
             }
 
-            if (isVisible == 1) {
-                visibleTrees++;
-                continue;
-            }
-
-            isVisible = 1;
+            currentScenicScore *= viewDistance;
+            viewDistance = 0;
 
             // Check right
-            for (int k = columns - 2; k > j; k--) {
+            for (int k = j + 1; k < columns - 1; k++) {
+                viewDistance++;
                 if (matrix[i][k] >= matrix[i][j]) {
-                    isVisible = 0;
                     break;
                 }
             }
 
-            if (isVisible == 1) {
-                visibleTrees++;
-                continue;
-            }
-
-            isVisible = 1;
+            currentScenicScore *= viewDistance;
+            viewDistance = 0;
 
             // Check top
-            for (int k = 0; k < i; k++) {
+            for (int k = i - 1; k >= 0; k--) {
+                viewDistance++;
                 if (matrix[k][j] >= matrix[i][j]) {
-                    isVisible = 0;
                     break;
                 }
             }
 
-            if (isVisible == 1) {
-                visibleTrees++;
-                continue;
-            }
-
-            isVisible = 1;
+            currentScenicScore *= viewDistance;
+            viewDistance = 0;
 
             // Check bottom
-            for (int k = rows - 1; k > i; k--) {
+            for (int k = i + 1; k < rows; k++) {
+                viewDistance++;
                 if (matrix[k][j] >= matrix[i][j]) {
-                    isVisible = 0;
                     break;
                 }
             }
 
-            if (isVisible == 1) {
-                visibleTrees++;
-                continue;
+            currentScenicScore *= viewDistance;
+
+            if (currentScenicScore > maxScenicScore) {
+                maxScenicScore = currentScenicScore;
             }
         }
     }
 
-
-//    for (int k = 0; k < rows; k++) {
-//        for (int l = 0; l < columns - 1; l++) {
-//           printf("%d ", matrix[k][l]);
-//        }
-//        printf("\n");
-//    }
-
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-    printf("\nVisible trees: %d", visibleTrees);
+    printf("\nMax scenic score of any tree: %d", maxScenicScore);
     printf("\nTime taken for task: %f", cpu_time_used);
 
     return 0;
