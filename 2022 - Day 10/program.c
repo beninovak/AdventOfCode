@@ -1,71 +1,65 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
+#include <time.h>
 
-int addToTotal(int cycle);
+int iSCorrectCycle(int cycle) {
+    if ((cycle == 20) || ((cycle - 20) % 40 == 0)) {
+        return 1;
+    }
+    return 0;
+}
 
 int main() {
+
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();
 
     FILE *fptr;
 
     fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 10\\input.txt", "r");
 
     int X = 1;
-    int amount = 0;
-    int strength = 0;
+    int amount;
+    int strength;
     int totalStrength = 0;
     int cycle = 0;
     char line[10];
+    char *token;
 
     // Read the content of file line by line
     while(fgets(line, 10, fptr)) {
 
-        bool isNoop = (strcmp(line, "noop") == 1);
+        cycle++;
 
-        if (isNoop) {
-            cycle++;
+        if (iSCorrectCycle(cycle)) {
             strength = cycle * X;
-        } else {
+            totalStrength += strength;
+        }
 
+        token = strtok(line, " ");
+        if (strcmp(token, "addx") == 0) {
             cycle++;
-            strength = cycle * X;
 
-            if (addToTotal(cycle) == 1)  {
+            if (iSCorrectCycle(cycle)) {
+                strength = cycle * X;
                 totalStrength += strength;
             }
 
-            cycle++;
-            strength = cycle * X;
-
-            char *token = strtok(line, " ");
-            while (token != NULL) {
-
-                token = strtok(NULL, " ");
-                amount = atoi(token);
-
-                if (amount != 0) {
-                    X += amount;
-                }
-            }
-        }
-
-        if (addToTotal(cycle) == 1)  {
-            totalStrength += strength;
+            token = strtok(NULL, " ");
+            amount = atoi(token);
+            X += amount;
         }
     }
 
-    printf("Sum of signal strengths: %d", totalStrength);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("Sum of signal strengths: %d\n", totalStrength);
+    printf("Time taken for execution: %f\n", cpu_time_used);
 
     fclose(fptr);
-    return 0;
-}
-
-int addToTotal(int cycle) {
-
-    if ((cycle == 20) || ((cycle - 20) % 40 == 0)) {
-        return 1;
-    }
-
     return 0;
 }
