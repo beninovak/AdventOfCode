@@ -2,81 +2,89 @@
 #include <string.h>
 #include <stdlib.h>
 
-void moveTailIfNeeded(int* HX, int* HY, int* TX, int* TY, int** matrix) {
+void moveTailIfNeeded(int nodeToCheck, int** nodes) {
 
 //    printf("HX: %p, HY: %p, TX: %p, TY: %p\n", HX, HY, TX, TY);
 //    printf("*HX: %d, *HY: %d, *TX: %d, *TY: %d\n", *HX, *HY, *TX, *TY);
-    fflush(stdout);
+//    fflush(stdout);
 
-    if (*HX - 1 > *TX) {
-        *TX = *TX + 1; // Note: this is not the same as *TX++;
+    int* HX = &nodes[nodeToCheck - 1][0];
+    int* HY = &nodes[nodeToCheck - 1][1];
+    int* TX = &nodes[nodeToCheck][0];
+    int* TY = &nodes[nodeToCheck][1];
+
+    if ((*HX - *TX == 2 || *HX - *TX == -2) && (*HY - *TY == 2 || *HY - *TY == -2)) {
+        (*TX) += (*TX < *HX) ? 1 : -1;
+        (*TY) += (*TY < *HY) ? 1 : -1;
+        return;
+    }
+
+    if (*HX - 2 == *TX) {
+        (*TX)++; // Note: this is not the same as *TX++, but IS the same as *TX = *TX + 1;
         *TY = *HY;
-        matrix[*TX][*TY] = 1;
-    } else if (*HX + 1 < *TX) {
-        *TX = *TX - 1;
+    } else if (*HX + 2 == *TX) {
+        (*TX)--;
         *TY = *HY;
-        matrix[*TX][*TY] = 1;
-    } else if (*HY - 1 > *TY) {
-        *TY = *TY + 1;
+    } else if (*HY - 2 == *TY) {
+        (*TY)++;
         *TX = *HX;
-        matrix[*TX][*TY] = 1;
-    } else if (*HY + 1 < *TY) {
-        *TY = *TY - 1;
+    } else if (*HY + 2 == *TY) {
+        (*TY)--;
         *TX = *HX;
-        matrix[*TX][*TY] = 1;
     }
 }
 
 int main() {
 
     FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 9\\input.txt", "r");
-    int** matrix = calloc(1000, sizeof(int*) * 1000);
+    char** matrix = calloc(1000, sizeof(char) * 1000);
 
     for (int i = 0; i < 1000; i++) {
-        matrix[i] = calloc(1000, sizeof(int*));
+        matrix[i] = calloc(1000, sizeof(char));
     }
+
+    const int nodesCount = 10;
+    int** nodes = calloc(nodesCount, sizeof(int*) * 2);
+
+    // All knots start at coordinates (500, 500)
+    for (int i = 0; i < nodesCount; i++) {
+        nodes[i] = calloc(2, sizeof(int*));
+        nodes[i][0] = 500;
+        nodes[i][1] = 500;
+    }
+
+    matrix[500][500] = '#';
 
     char line[10] = "";
     char* token;
     char command[2];
     int amountToMove;
 
-    // Head and tail start at (500, 500) - the middle of the grid
-    int hx = 500, hy = 500;
-    int tx = 500, ty = 500;
-
-    matrix[500][500] = 1;
-
-//    int count = 0;
-
     while (fgets(line, sizeof(line), fptr)) {
-//        count++;
-//        if (count > 20) break;
         token = strtok(line, " ");
         strcpy(command, token);
         token = strtok(NULL, "\n");
         amountToMove = atoi(token);
 
-        if (strcmp(command, "L") == 0) {
-            for (int t = 0; t < amountToMove; t++) {
-                hx--;
-                moveTailIfNeeded(&hx, &hy, &tx, &ty, matrix);
+
+        for (int t = 0; t < amountToMove; t++) {
+
+            if (strcmp(command, "L") == 0) {
+                nodes[0][0]--; // Head x coordinate
+            } else if (strcmp(command, "R") == 0) {
+                nodes[0][0]++; // Head x coordinate
+            } else if (strcmp(command, "U") == 0) {
+                nodes[0][1]--; // Head y coordinate
+            } else if (strcmp(command, "D") == 0) {
+                nodes[0][1]++; // Head y coordinate
             }
-        } else if (strcmp(command, "R") == 0) {
-            for (int t = 0; t < amountToMove; t++) {
-                hx++;
-                moveTailIfNeeded(&hx, &hy, &tx, &ty, matrix);
+
+            for (int k = 1; k < nodesCount; k++) {
+                moveTailIfNeeded(k, nodes);
             }
-        } else if (strcmp(command, "U") == 0) {
-            for (int t = 0; t < amountToMove; t++) {
-                hy--;
-                moveTailIfNeeded(&hx, &hy, &tx, &ty, matrix);
-            }
-        } else if (strcmp(command, "D") == 0) {
-            for (int t = 0; t < amountToMove; t++) {
-                hy++;
-                moveTailIfNeeded(&hx, &hy, &tx, &ty, matrix);
-            }
+
+            // Mark the position of the last knot
+            matrix[nodes[nodesCount - 1][0]][nodes[nodesCount - 1][1]] = '#';
         }
     }
 
@@ -84,10 +92,14 @@ int main() {
 
     for (int i = 0; i < 1000; i++) {
         for (int j = 0; j < 1000; j++) {
-            if (matrix[i][j] == 1) {
+            if (matrix[i][j] == '#') {
                 uniquePositionsVisited++;
             }
         }
+    }
+
+    for (int i = 0; i < 10; i++) {
+        printf("x: %d, y: %d\n", nodes[i][0], nodes[i][1]);
     }
 
     printf("\nUnique positions visited: %d\n", uniquePositionsVisited);
