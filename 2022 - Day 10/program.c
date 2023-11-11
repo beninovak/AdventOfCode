@@ -3,11 +3,23 @@
 #include <string.h>
 #include <time.h>
 
-int iSCorrectCycle(int cycle) {
+int iSCorrectCycle (int cycle) {
     if ((cycle == 20) || ((cycle - 20) % 40 == 0)) {
         return 1;
     }
     return 0;
+}
+
+void drawPixel (int X, int cycle) {
+    if ((X == cycle % 40 - 1) || (X - 1 == cycle % 40 - 1) || (X + 1 == cycle % 40 - 1)) {
+        printf("#");
+    } else {
+        printf(".");
+    }
+
+    if (cycle % 40 == 0) {
+        printf("\n");
+    }
 }
 
 int main() {
@@ -34,6 +46,8 @@ int main() {
 
         cycle++;
 
+        drawPixel (X, cycle);
+
         if (iSCorrectCycle(cycle)) {
             strength = cycle * X;
             totalStrength += strength;
@@ -42,6 +56,8 @@ int main() {
         token = strtok(line, " ");
         if (strcmp(token, "addx") == 0) {
             cycle++;
+
+            drawPixel (X, cycle);
 
             if (iSCorrectCycle(cycle)) {
                 strength = cycle * X;
