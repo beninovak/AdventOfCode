@@ -12,12 +12,14 @@ int main() {
     char color[10] = "", colorToken[10] = "";
 
     int redInBag = 12, greenInBag = 13, blueInBag = 14;
+    int red, green, blue, setOver = 0, minRed, minGreen, minBlue, setPossible = 1;
 
-    int red, green, blue, setOver = 0, setPossible = 1;
+    long colorPower;
+    long colorPowerSums = 0;
 
     while (fgets(line, sizeof(line), fptr)) {
 
-        red = green = blue = 0;
+        red = green = blue = minRed = minGreen = minBlue = colorPower = 0;
         token = strtok(line, " ");
         token = strtok(NULL, ":");
         id = atoi(token);
@@ -41,10 +43,19 @@ int main() {
             }
 
             if (strcmp(color, "red") == 0) {
+                if (colorCount > minRed) {
+                    minRed = colorCount;
+                }
                 red += colorCount;
             } else if (strcmp(color, "green") == 0) {
+                if (colorCount > minGreen) {
+                    minGreen = colorCount;
+                }
                 green += colorCount;
             } else if (strcmp(color, "blue") == 0) {
+                if (colorCount > minBlue) {
+                    minBlue = colorCount;
+                }
                 blue += colorCount;
             }
 
@@ -53,7 +64,6 @@ int main() {
             if (setOver) {
                 if (red > redInBag || green > greenInBag || blue > blueInBag) {
                     setPossible = 0;
-                    break;
                 }
                 red = green = blue = setOver = 0;
             }
@@ -61,12 +71,17 @@ int main() {
             token = strtok(NULL, " ");
         }
 
+        colorPower = minRed * minBlue * minGreen;
+        printf("R: %d, G: %d, B: %d --> Color power: %ld\n", minRed, minGreen, minBlue, colorPower);
+        colorPowerSums += colorPower;
+
         if (setPossible) {
             gameIds += id;
         }
     }
 
-    printf("Sum of possible games: %d", gameIds);
+    printf("Sum of possible games: %d\n", gameIds);
+    printf("Sum of color powers of games: %ld", colorPowerSums);
 
     fclose(fptr);
     return 0;
