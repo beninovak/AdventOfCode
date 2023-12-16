@@ -43,73 +43,212 @@ int main() {
     fclose(fptr);
 
     // Traverse matrix
-    char ch;
     char num[5] = "";
-    int numLength = 0;
+    int numLength;
     int counter;
-    long partsSum = 0;
-    int alreadyAdded;
-
+    int numbersCount;
+    char digit;
+    int index, num1, num2;
+    long long gearsSum = 0;
 
     for (int j = 0; j < rows; j++) {
         for (int k = 0; k < columns; k++) {
+            if (matrix[j][k] == '*') {
 
-            ch = matrix[j][k];
-            if (isdigit(ch)) {
-
-                alreadyAdded = 0;
-                memset(num, 0, sizeof(num));
-
-                counter = 0;
-                while (isdigit(ch)) {
-                    num[counter] = ch;
-                    counter++;
-
-                    ch = matrix[j][k + counter];
-                }
-
-                numLength = counter;
+                num1 = num2 = numbersCount = 0;
 
                 // Check left from number
-                if (k > 0 && isSymbol(matrix[j][k - 1]) == 1) {
-                    partsSum += atoi(num);
-                    alreadyAdded = 1;
+                if (k > 0 && isdigit(matrix[j][k - 1]) == 1) {
+
+                    memset(num, 0, sizeof(num));
+
+                    index = k - 1;
+                    counter = numLength = 0;
+
+                    digit = matrix[j][index];
+                    while (isdigit(digit) && index >= 0) {
+                        numLength++;
+                        index--;
+                        digit = matrix[j][index];
+                    }
+
+                    index = k - numLength;
+                    digit = matrix[j][index];
+                    while (isdigit(digit)) {
+                        num[counter] = digit;
+                        index++;
+                        digit = matrix[j][index];
+                        counter++;
+                    }
+
+                    num1 = atoi(num);
+                    numbersCount++;
                 }
 
                 // Check right from number
-                if (alreadyAdded == 0 && k + numLength < columns && isSymbol(matrix[j][k + numLength]) == 1) {
-                    partsSum += atoi(num);
-                    alreadyAdded = 1;
+                if (k < columns && isdigit(matrix[j][k + 1]) == 1) {
+
+                    memset(num, 0, sizeof(num));
+
+                    index = k + 1;
+                    counter = 0;
+
+                    digit = matrix[j][index];
+                    while (isdigit(digit)) {
+                        num[counter] = digit;
+                        index++;
+                        digit = matrix[j][index];
+                        counter++;
+                    }
+
+                    if (num1 == 0) {
+                        num1 = atoi(num);
+                    } else {
+                        num2 = atoi(num);
+                    }
+
+                    numbersCount++;
                 }
 
                 // Check top row
-                if (alreadyAdded == 0 && j > 0) {
-                    for (int c = k - 1; c < k + numLength + 1; c++) {
-                        if (c >= 0 && c < columns && isSymbol(matrix[j - 1][c]) == 1) {
-                            partsSum += atoi(num);
-                            alreadyAdded = 1;
-                            break;
+                if (j > 0) {
+
+                    int i;
+                    if (k > 0) {
+                         i = k - 1;
+                    } else {
+                        i = 0;
+                    }
+
+                    for (i; i <= k + 1; i++) {
+                        if (isdigit(matrix[j - 1][i])) {
+
+                            memset(num, 0, sizeof(num));
+
+                            counter = numLength = 0;
+
+                            index = i;
+                            int forwards = 0;
+                            while (1) {
+
+                                if (!forwards) {
+                                    index--;
+                                    numLength++;
+
+                                    digit = matrix[j - 1][index];
+
+                                    if (!isdigit(digit)) {
+                                        index++;
+                                        forwards = 1;
+                                    }
+
+                                } else {
+                                    digit = matrix[j - 1][index];
+                                    index++;
+
+                                    if (!isdigit(digit)) {
+                                        break;
+                                    }
+
+                                    num[counter] = digit;
+                                    counter++;
+                                }
+                            }
+
+                            i++;
+
+                            if (isdigit(matrix[j - 1][k])) {
+                                i++;
+                            }
+
+                            if (num1 == 0) {
+                                num1 = atoi(num);
+                            } else {
+                                num2 = atoi(num);
+                            }
+
+                            numbersCount++;
                         }
                     }
                 }
+
+                if (numbersCount > 2) continue;
 
                 // Check bottom row
-                if (alreadyAdded == 0 && j < rows - 1) {
-                    for (int c = k - 1; c < k + numLength + 1; c++) {
-                        if (c >= 0 && c < columns && isSymbol(matrix[j + 1][c]) == 1) {
-                            partsSum += atoi(num);
-                            break;
+                if (j < rows - 1) {
+
+                    int i;
+                    if (k > 0) {
+                         i = k - 1;
+                    } else {
+                        i = 0;
+                    }
+
+                    for (i; i <= k + 1; i++) {
+                        if (isdigit(matrix[j + 1][i])) {
+
+                            memset(num, 0, sizeof(num));
+
+                            counter = numLength = 0;
+
+                            index = i;
+                            int forwards = 0;
+                            while (1) {
+
+                                if (!forwards) {
+                                    index--;
+                                    numLength++;
+
+                                    digit = matrix[j + 1][index];
+
+                                    if (!isdigit(digit)) {
+                                        index++;
+                                        forwards = 1;
+                                    }
+
+                                } else {
+                                    digit = matrix[j + 1][index];
+                                    index++;
+
+                                    if (!isdigit(digit)) {
+                                        break;
+                                    }
+
+                                    num[counter] = digit;
+                                    counter++;
+                                }
+                            }
+
+                            i++;
+
+                            if (isdigit(matrix[j + 1][k])) {
+                                i++;
+                            }
+
+                            if (num1 == 0) {
+                                num1 = atoi(num);
+                            } else {
+                                num2 = atoi(num);
+                            }
+
+                            numbersCount++;
                         }
                     }
                 }
 
-                // counter - 1 because 'k' is incremented at the top of the loop anyway
-                k += (counter - 1);
+                if (numbersCount != 2) continue;
+
+//                printf("\nRow: %d Column: %d", j + 1, k + 1);
+//                printf("\nNum 1: %d, num 2: %d", num1, num2);
+//                printf("\nGear ratio %d", num1 * num2);
+//                printf("\n--------------------------------------");
+
+                gearsSum += (num1 * num2);
             }
         }
     }
 
-    printf("Parts sum: %ld", partsSum);
+    printf("\nGears sum: %lld ", gearsSum);
 
     return 0;
 }
