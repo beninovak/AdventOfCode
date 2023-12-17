@@ -9,6 +9,9 @@ int main() {
     char line[200] = "";
     char* token;
 
+    int gameId = 0;
+    int cards[200] = {0};
+    int cardsArrayLength = sizeof(cards) / sizeof(cards[0]);
     int winningNumbers[50] = {0};
     int scratchedNumbers[50] = {0};
     int index, readWinningNumbers;
@@ -17,6 +20,7 @@ int main() {
 
     while (fgets(line, sizeof(line), fptr)) {
 
+        cards[gameId]++;
         index = readWinningNumbers = 0;
         token = strtok(line, ":");
 
@@ -55,11 +59,29 @@ int main() {
             }
             i++;
         }
+
+        for (int l = 0; l < cards[gameId]; l++) {
+            for(int c = gameId + 1; c < gameId + 1 + winningNumbersCount; c++) {
+                if (c < cardsArrayLength) {
+                    cards[c] = cards[c] + 1;
+                }
+            }
+        }
+
         cardScoreSum += cardScore;
+
+        gameId++;
     }
 
     fclose(fptr);
 
+    int totalCards = 0;
+
+    for (int i = 0; i < cardsArrayLength; i++) {
+        totalCards += cards[i];
+    }
+
+    printf("Total cards: %d\n", totalCards);
     printf("Card score sum: %d", cardScoreSum);
 
     return 0;
