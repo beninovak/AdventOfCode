@@ -1,161 +1,266 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
-typedef struct Vertex {
-    int x;
-    int y;
-    int value;
-    int distance;
-    int visited;
-    struct Vertex* prev;
-} Vertex;
+void printArray(int** nodes) {
 
-typedef struct VertexList {
-    Vertex* first;
-    Vertex* last;
-} VertexList;
+    int index = 0;
 
-void arrayShiftLeft(Vertex array[], int arrayLength) {
-    for (int i = 0; i < arrayLength; i++) {
-        array[i] = array[i + 1];
-        if (array[i + 1].value == 0) {
-            return;
-        }
+    while(1) {
+        if(nodes[index] == NULL) break;
+
+        printf("y: %d, x: %d\n", nodes[index][0], nodes[index][1]);
+
+        index++;
     }
 }
 
-void handleVertex (Vertex** vertices, int x, int y, Vertex currentVertex) {
-    vertices[y][x].prev = &currentVertex;
-    vertices[y][x].visited = 1;
-    if (currentVertex.distance + 1 < vertices[y][x].distance) {
-        vertices[y][x].distance = currentVertex.distance + 1;
+void arrayPopLast(int** array) {
+    int index = 0;
+    while(1) {
+        if (array[index + 1] == NULL) {
+            array[index] = NULL;
+            break;
+        }
+        index++;
     }
 }
 
-//void arrayShiftRight(Vertex* array[]) {
-//    int index = 0;
-//    while (array[index]->value != 0) {
-//        array[index] = array[index - 1];
-//        index++;
-//    }
-//}
+void arrayPopFirst(int** array) {
+    array[0] = NULL;
+    int index = 0;
+    while(1) {
+        array[index] = array[index + 1];
+        array[index + 1] = NULL;
 
-int main() {
-
-    FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 12\\input.txt", "r");
-    int ch = getc(fptr);
-    int chs = 0;
-    int rows = 0;
-    int lineLength = 0;
-    int startX, startY, endX, endY;
-
-    while (ch != '\n') {
-        lineLength++;
-        ch = getc(fptr);
+        if (array[index + 1] == NULL) {
+            break;
+        }
+        index++;
     }
+}
 
-    rewind(fptr);
 
-    char* line = calloc(1, sizeof(char) * (lineLength + 1));
-    while (fgets(line, sizeof(char) * (lineLength + 2), fptr)) {
-        rows++;
-    }
-
-    rewind(fptr);
-
-    Vertex** vertices = calloc(rows, sizeof(Vertex) * lineLength);
-    vertices[0] = calloc(lineLength, sizeof(Vertex));
-
-    ch = getc(fptr);
-    rows = 0;
-
-    while (ch != EOF) {
-        if (ch == '\n') {
-            rows++;
-            ch = getc(fptr);
-            vertices[rows] = calloc(lineLength, sizeof(Vertex));
-            continue;
-        } else if (ch == 'S') {
-            startX = chs - (rows * lineLength);
-            startY = rows;
-        } else if (ch == 'E') {
-            endX = chs - (rows * lineLength);
-            endY = rows;
-        }
-
-        Vertex newVertex = {
-            .x = chs - (rows * lineLength),
-            .y = rows,
-            .value = ch,
-            .distance = INT_MAX,
-            .visited = 0,
-            .prev = NULL,
-        };
-
-        vertices[rows][chs - (rows * lineLength)] = newVertex;
-
-        chs++;
-        ch = getc(fptr);
-    }
-    fclose(fptr);
-
-    Vertex currentVertex = vertices[startY][startX];
-    currentVertex.distance = 0;
-    Vertex queue[rows * lineLength];
-    queue[0] = currentVertex;
-    int x = currentVertex.x;
-    int y = currentVertex.y;
-
-    while (queue[0].value != 0) {
-
-        currentVertex = queue[0];
-        x = currentVertex.x;
-        y = currentVertex.y;
-
-        // Dequeue
-        arrayShiftLeft(queue, rows * lineLength);
-
-        // Check left
-        if (x > 0) {
-            if (vertices[y][x - 1].visited == 0) {
-                handleVertex(vertices, x - 1, y, currentVertex);
-            }
-        }
-        // Check right
-        if (x < lineLength) {
-            if (vertices[y][x + 1].visited == 0) {
-                handleVertex(vertices, x + 1, y, currentVertex);
-            }
-        }
-        // Check top
-        if (y > 0) {
-            if (vertices[y - 1][x].visited == 0) {
-                handleVertex(vertices, x, y - 1, currentVertex);
-            }
-        }
-        // Check bottom
-        if (y < rows) {
-            if (vertices[y + 1][x].visited == 0) {
-                handleVertex(vertices, x, y + 1, currentVertex);
-            }
-        }
-    }
-
-    Vertex endVertex = vertices[endY][endX];
-    Vertex temp = endVertex;
+void pushToArray(int** nodes, const int* node) {
 
     int count = 0;
-    while (temp.prev != NULL) {
-        temp = *temp.prev;
+//    printf("\n");
+    while(1) {
+        if (nodes[count] == NULL) {
+            nodes[count] = calloc(2, sizeof(int));
+            nodes[count][0] = node[0];
+            nodes[count][1] = node[1];
+//            printArray(nodes);
+            break;
+        }
+
+        count++;
+    }
+//    printf("\n");
+}
+
+int arrayContains(int** visitedNodes, const int node[2]) {
+
+    int count = 0;
+    while(visitedNodes[count] != NULL) {
+        if (visitedNodes[count][0] == node[0] && visitedNodes[count][1] == node[1]) {
+            return 1;
+        }
         count++;
     }
 
-    printf("Vertex [5][72] value: %d\n", vertices[5][72].value);
-    printf("Vertex [5][72] distance: %d\n", vertices[5][72].distance);
-    printf("Vertex [5][72] visited: %d\n", vertices[5][72].visited);
-    printf("Vertex [5][72] previous: %p\n", vertices[5][72].prev);
-    printf("Steps required to get from start to finish: %d", count);
+    return 0;
+}
+
+int isReachable(char current, char adjacent) {
+
+    if (current == adjacent || current - adjacent == 1 || current - adjacent == -1) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int main() {
+
+    setbuf(stdout, 0);
+    FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 12\\example.txt", "r");
+
+    int columns = 0;
+    while (getc(fptr) != '\n') {
+        columns++;
+    }
+    rewind(fptr);
+
+    int rows = 0;
+    char line[200] = "";
+    while (fgets(line, sizeof(line), fptr)) {
+        rows++;
+    }
+    rewind(fptr);
+
+
+    char** grid = calloc(rows, sizeof(char) * columns);
+    int startX, startY, endX, endY;
+
+    int row = 0, column = 0;
+    while (fgets(line, sizeof(line), fptr)) {
+
+        grid[row] = calloc(columns, sizeof(char));
+        column = 0;
+
+        while (line[column] != '\0') {
+            grid[row][column] = line[column];
+
+            if (line[column] == 'S') {
+                startY = row;
+                startX = column;
+                grid[row][column] = 'a';
+            } else if (line[column] == 'E') {
+                endY = row;
+                endX = column;
+                grid[row][column] = 'z';
+            }
+
+            column++;
+        }
+        row++;
+    }
+    fclose(fptr);
+
+    int x = startX, y = startY;
+    int** queue = calloc(rows * columns, sizeof(int) * 2);
+    int queueSize = rows * columns;
+    int** visitedNodes = calloc(rows * columns, sizeof(int) * 2);
+    int* currentNode= calloc(2, sizeof(int));
+    int* previousNode = calloc(2, sizeof(int));
+    int* adjacentNode = calloc(2, sizeof(int));
+    int pathLength = 0;
+    int anyAdjacent = 0;
+
+    currentNode[0] = startY;
+    currentNode[1] = startX;
+    previousNode[0] = startY;
+    previousNode[1] = startX;
+
+    queue[0] = currentNode;
+
+    int index = 0;
+    int counter = 0;
+    while(queue[index] != NULL/*counter < 10*/) {
+
+        y = queue[index][0];
+        x = queue[index][1];
+
+        if (counter == 0) {
+            arrayPopFirst(queue);
+        } else {
+            arrayPopLast(queue);
+        }
+
+        if (y == endY && x == endX) {
+//            pathLength++;
+            break;
+        }
+
+        currentNode[0] = y;
+        currentNode[1] = x;
+
+        if (arrayContains(visitedNodes, currentNode) == 1) {
+            arrayPopLast(queue);
+            counter++;
+            continue;
+        }
+
+        anyAdjacent = 0;
+        if (y > 0 && isReachable(grid[y][x], grid[y - 1][x])) {
+            adjacentNode[0] = y - 1;
+            adjacentNode[1] = x;
+
+            if (y - 1 == endY && x == endX) break;
+
+            if (arrayContains(visitedNodes, adjacentNode) == 0 && arrayContains(queue, adjacentNode) == 0) {
+                anyAdjacent = 1;
+                pushToArray(queue, adjacentNode);
+            }
+        }
+
+        if (y < rows - 1 && isReachable(grid[y][x], grid[y + 1][x])) {
+            adjacentNode[0] = y + 1;
+            adjacentNode[1] = x;
+
+            if (y + 1 == endY && x == endX) break;
+
+            if (arrayContains(visitedNodes, adjacentNode) == 0 && arrayContains(queue, adjacentNode) == 0) {
+                anyAdjacent = 1;
+                pushToArray(queue, adjacentNode);
+            }
+        }
+
+        if (x > 0 && isReachable(grid[y][x], grid[y][x - 1])) {
+            adjacentNode[0] = y;
+            adjacentNode[1] = x - 1;
+
+            if (y == endY && x - 1 == endX) break;
+
+            if (arrayContains(visitedNodes, adjacentNode) == 0 && arrayContains(queue, adjacentNode) == 0) {
+                anyAdjacent = 1;
+                pushToArray(queue, adjacentNode);
+            }
+        }
+
+        if (x < columns - 1 && isReachable(grid[y][x], grid[y][x + 1])) {
+            adjacentNode[0] = y;
+            adjacentNode[1] = x + 1;
+
+            if (y == endY && x + 1 == endX) break;
+
+            if (arrayContains(visitedNodes, adjacentNode) == 0 && arrayContains(queue, adjacentNode) == 0) {
+                anyAdjacent = 1;
+                pushToArray(queue, adjacentNode);
+            }
+        }
+
+        if (anyAdjacent == 1) {
+            pathLength++;
+        }
+
+        if (anyAdjacent == 0) {
+            pathLength--;
+        }
+
+        pushToArray(visitedNodes, currentNode);
+
+//        printf("\n----------------%d---------------\n", counter + 1);
+//        printArray(visitedNodes);
+//
+//        printf("---------------Queue:--------------\n");
+//        printArray(queue);
+//        printf("Path length: %d", pathLength);
+//        printf("\n---------------END---------------\n");
+
+        index = 0;
+        for (int k = 0; k < queueSize; k++) {
+            if (queue[k] != NULL) {
+                index++;
+            } else {
+                break;
+            }
+        }
+
+        index--;
+
+        counter++;
+//        printf("%d\n", counter + 1);
+    }
+
+//    for (int i = 0; i < rows; i++) {
+//        for(int j = 0; j < columns; j++) {
+//            printf("%c ", grid[i][j]);
+//        }
+//        printf("\n");
+//    }
+
+    printf("Path length: %d", pathLength);
 
     return 0;
 }

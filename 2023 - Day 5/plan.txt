@@ -1,0 +1,4 @@
+// 1. Get seeds
+2. Read line by line and update variables like 'minSeedRange', 'maxSeedRange',
+   'minSoilRange', 'maxSoilRange' etc.
+3. Go through the stages for each seed and keep track of the lowest 'location' number

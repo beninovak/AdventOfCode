@@ -25,8 +25,7 @@ int isWordDigit(char word[50]) {
 char wordToDigit(char word[50]) {
     if (strcmp(word, "zero") == 0) {
         return '0';
-    } else
-        if (strcmp(word, "one") == 0) {
+    } else if (strcmp(word, "one") == 0) {
         return '1';
     } else if (strcmp(word, "two") == 0) {
         return '2';
@@ -51,12 +50,8 @@ char wordToDigit(char word[50]) {
 
 int main() {
 
-//    printf("Is digit: \'\\0\'? -> %d\n", isdigit('\0'));
-//    printf("Is digit: \'0\'? -> %d", isdigit('0'));
-//    return 0;
-
     FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2023 - Day 1\\input.txt", "r");
-    char line[50];
+    char line[100];
     int index;
     char digit;
     char num[3], firstDigit, lastDigit;
@@ -77,8 +72,6 @@ int main() {
 
             if (isdigit(digit)) {
                 memset(word, 0, sizeof(word));
-
-//                printf("%c ", digit);
 
                 if (firstDigit == '\0') {
                     firstDigit = digit;
@@ -105,7 +98,6 @@ int main() {
                             }
 
                             if (isWordDigit(substr) == 1) {
-//                                printf("Substring: %s\n", substr);
                                 if (firstDigit == '\0') {
                                     firstDigit = wordToDigit(substr);
                                 }
@@ -125,7 +117,6 @@ int main() {
         num[1] = lastDigit;
         sum += atoi(num);
         printf("%c %c -> %d = %d\n", firstDigit, lastDigit, atoi(num), sum);
-//        num = '\0';
     }
 
     printf("Sum: %d", sum);
