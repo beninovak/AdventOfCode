@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
 typedef struct _Vertex {
     int y;
@@ -65,10 +64,8 @@ int isReachable(int current, int adjacent) {
 }
 
 int main() {
-    int test = INT_MAX;
-    int test2 = INT_MAX + 1;
     setbuf(stdout, 0);
-    FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 12\\input.txt", "r");
+    FILE* fptr = fopen("C:\\Users\\Janez Povezava\\CLionProjects\\AdventOfCode\\2022 - Day 12\\example.txt", "r");
 
     int columns = 0;
     while (getc(fptr) != '\n') {
@@ -101,7 +98,7 @@ int main() {
             Vertex* currentNode = calloc(1, sizeof(Vertex));
             currentNode->y = row;
             currentNode->x = column;
-            currentNode->distance = INT_MAX;
+            currentNode->distance = 1000000;
             currentNode->previous = NULL;
             currentNode->value = (int)line[column];
 
@@ -128,27 +125,19 @@ int main() {
     int y = 0, x = 0;
     int counter = 0;
     int pathLength = 0;
-    int minDistanceIndex = 0;
+    int minDistance;
+    int minDistanceIndex = (startY * columns) + startX;
 
-    Vertex* currentNode;
+    Vertex* currentNode = grid[startY][startX];
     Vertex* adjacentNode;
 
-    while(allNodesVisited(unVisitedNodes, arraySize) == 0) {
+//    while(allNodesVisited(unVisitedNodes, arraySize) == 0) {
+    while(currentNode != NULL) {
 
-        for (int i = 0; i < arraySize; i++) {
-            if (unVisitedNodes[i] == NULL) continue;
-            if (unVisitedNodes[minDistanceIndex] == NULL) {
-                minDistanceIndex = i;
-            }
-
-            if (unVisitedNodes[i]->distance < unVisitedNodes[minDistanceIndex]->distance) {
-                minDistanceIndex = i;
-            }
-        }
-
-        currentNode = unVisitedNodes[minDistanceIndex];
         y = currentNode->y;
         x = currentNode->x;
+
+//        printf("\ny: %d, x: %d, distance: %d\n", currentNode->y, currentNode->x, currentNode->distance);
 
         if (y > 0 && isReachable(currentNode->value, grid[y - 1][x]->value)) {
             adjacentNode = grid[y - 1][x];
@@ -189,10 +178,20 @@ int main() {
 //        printf("\n----------------Step %d, Visited nodes---------------\n", counter + 1);
 //        printArray(visitedNodes, arraySize);
 //        printf("\n-------------------------END-------------------------\n");
-        counter++;
-    }
 
-//    free(adjacentNode);
+        counter++;
+
+        minDistance = 1000000;
+        for (int i = 0; i < arraySize; i++) {
+            if (unVisitedNodes[i] == NULL) continue;
+
+            if (unVisitedNodes[i]->distance < minDistance) {
+                minDistance = unVisitedNodes[i]->distance;
+                minDistanceIndex = i;
+            }
+        }
+        currentNode = unVisitedNodes[minDistanceIndex];
+    }
 
     pathLength = grid[endY][endX]->distance;
     char* path = calloc(pathLength + 1, sizeof(char));
