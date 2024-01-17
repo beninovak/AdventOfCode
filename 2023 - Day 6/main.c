@@ -7,32 +7,33 @@ int main() {
     int distances[3] = { 9, 40, 200 };
     */
 
-    int times[4] = { 59, 79, 65, 75 };
-    int distances[4] = { 597, 1234, 1032, 1328 };
-    int waysToWin[4] = { 0 };
+    long long time = 59796575;
+    long long distance = 597123410321328;
+
+//    int time = 71530;
+//    long long distance = 940200;
+
+    long long waysToWin = 0;
 
     // Speed -> millimeters/millisecond
-    int speed, timeLeft;
-    int numberOfWaysToWin = 0;
+    long long speed, timeLeft;
 
-    for(int i = 0; i < 4; i++) {
-        for (int buttonHoldTime = 1; buttonHoldTime < times[i]; buttonHoldTime++) {
-            speed = buttonHoldTime;
-            timeLeft = times[i] - buttonHoldTime;
+    for (long long buttonHoldTime = 1; buttonHoldTime < time; buttonHoldTime++) {
+        speed = buttonHoldTime;
+        timeLeft = time - buttonHoldTime;
 
-            if (speed * timeLeft > distances[i]) {
-                waysToWin[i]++;
-            }
+        if (speed * timeLeft > distance) {
+            waysToWin++;
         }
     }
 
-    int numberOfWaysToWinProduct = 1;
+//    int numberOfWaysToWinProduct = 1;
 
-    for (int k = 0; k < 4; k++) {
-        printf("Race %d ways to win: %d\n", k + 1, waysToWin[k]);
-        numberOfWaysToWinProduct *= waysToWin[k];
-    }
+//    for (int k = 0; k < 4; k++) {
+//        printf("Race %d ways to win: %d\n", k + 1, waysToWin[k]);
+//        numberOfWaysToWinProduct *= waysToWin[k];
+//    }
 
-    printf("Number of ways to win: %d", numberOfWaysToWinProduct);
+    printf("Number of ways to win: %lld", waysToWin);
     return 0;
 }
