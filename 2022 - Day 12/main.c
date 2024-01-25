@@ -131,13 +131,12 @@ int main() {
     Vertex* currentNode = grid[startY][startX];
     Vertex* adjacentNode;
 
-//    while(allNodesVisited(unVisitedNodes, arraySize) == 0) {
     while(currentNode != NULL) {
 
         y = currentNode->y;
         x = currentNode->x;
 
-//        printf("\ny: %d, x: %d, distance: %d\n", currentNode->y, currentNode->x, currentNode->distance);
+//        printf("\ny: %d, x: %d, distance: %d", adjacentNode->y, adjacentNode->x, adjacentNode->distance);
 
         if (y > 0 && isReachable(currentNode->value, grid[y - 1][x]->value)) {
             adjacentNode = grid[y - 1][x];
@@ -169,7 +168,6 @@ int main() {
                 grid[y][x + 1]->distance = currentNode->distance + 1;
                 grid[y][x + 1]->previous = currentNode;
             }
-
         }
         
         pushToArray(visitedNodes, currentNode, arraySize);
