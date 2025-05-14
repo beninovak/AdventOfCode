@@ -6,3 +6,6 @@
 */cmake-build-debug/*
 */.idea/
 */.idea/*
+*/core_
+*/core_/*
+
