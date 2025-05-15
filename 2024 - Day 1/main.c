@@ -48,15 +48,27 @@ int main() {
     qsort(left, rows, sizeof(int), compare);
     qsort(right, rows, sizeof(int), compare);
 
-    int sumDiffs = 0;
+    int sum_diffs = 0;
+    long similarity_score = 0;
     for(int i = 0; i < rows; i++) {
         int diff = left[i] - right[i];
         if (diff < 0) {
             diff = diff * -1;
         }
-        sumDiffs = sumDiffs + diff;
+        sum_diffs = sum_diffs + diff;
+        
+        int count = 0;
+
+        for(int j = 0; j < rows; j++) {
+            if (left[i] == right[j]) {
+                count++;
+            }
+        }
+        similarity_score = similarity_score + (left[i] * count);
+        //printf("Similarity: %ld\n", similarity_score);
     }
 
-    printf("Done. Sum diffs: %d\n", sumDiffs);
+    printf("Done. Sum diffs: %d\n", sum_diffs);
+    printf("Done. Similarity score: %ld\n", similarity_score);
     return 0;
 }
