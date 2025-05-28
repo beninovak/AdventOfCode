@@ -103,10 +103,7 @@ int main () {
         
         if(is_line_unsafe(tokens, -1, num_count) == 0) {
             safe_reports++; 
-        } else {
-            // TODO - Split line into
         }
-
         free(tokens);
         // if (token != NULL) {
         //     free(token);
