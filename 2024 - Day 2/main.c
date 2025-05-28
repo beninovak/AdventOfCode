@@ -8,27 +8,7 @@ int get_diff(int a, int b) {
     return diff < 0 ? diff * -1 : diff;
 }
 
-int is_line_unsafe(char* line, int skip_index) {
-
-    int num_count = 0;
-    for(int i = 0; i < strlen(line); i++) {
-        if (line[i] == ' ') {
-            num_count++;
-        }
-    }
-    char** tokens = calloc(num_count, sizeof(char*));
-    char* token;
-    for(int i = 0; i < num_count; i++) {
-        if (i == 0) {
-            token = strtok(line, " \n"); 
-        } else {
-            token = strtok(NULL, " \n");
-        }
-        tokens[i] = calloc(strlen(token), sizeof(char));
-        strcpy(tokens[i], token);
-    }
-
-
+int is_line_unsafe(char** tokens, int skip_index, int num_count) {
     int previous = 0, current = 0, diff = 0, direction = 0;
     int unsafe = 0, count = 0;
 
@@ -39,7 +19,6 @@ int is_line_unsafe(char* line, int skip_index) {
 
         if (count == 0) {
             previous = current;
-            token = strtok(NULL, " \n");
             count++;
             continue;
         }
@@ -73,20 +52,25 @@ int is_line_unsafe(char* line, int skip_index) {
 
                      
         previous = current;
-        token = strtok(NULL, " \n");
         count++;
     }
 
-    if (unsafe == 1 && skip_index == -1) {
-
-    }
     printf("\n");
+    if (unsafe == 1 && skip_index == -1) {
+        for(int i = 0; i < num_count; i++) {
+            if (is_line_unsafe(tokens, i, num_count) == 0) {
+                unsafe = 0;
+                printf("Newly safe ^\n");
+                break;
+            }
+        }
+    }
     return unsafe;
 }
 
 int main () {
 
-    FILE* fptr = fopen("example.txt", "rb");
+    FILE* fptr = fopen("input.txt", "rb");
     if (fptr == NULL) {
         printf("Cannot open file!\n");
         return 1;
@@ -96,11 +80,38 @@ int main () {
 
     int safe_reports = 0;
     for(int i = 0; i < file->line_count; i++) {
-        if(is_line_unsafe(file->lines[i]->start, -1) == 0) {
+        int num_count = 0;
+        for(int j = 0; j < strlen(file->lines[i]->start); j++) {
+            if (file->lines[i]->start[j] == ' ') {
+                num_count++;
+            }
+        }
+        num_count++; // One more string than spaces.
+        char** tokens = calloc(num_count, sizeof(char*));
+        char* token;
+        char* copy = calloc(strlen(file->lines[i]->start), sizeof(char));
+        strcpy(copy, file->lines[i]->start);
+        for(int k = 0; k < num_count; k++) {
+            if (k == 0) {
+                token = strtok(copy, " \n"); 
+            } else {
+                token = strtok(NULL, " \n");
+            }
+            tokens[k] = calloc(strlen(token), sizeof(char));
+            strcpy(tokens[k], token);
+        }
+        
+        if(is_line_unsafe(tokens, -1, num_count) == 0) {
             safe_reports++; 
         } else {
             // TODO - Split line into
         }
+
+        free(tokens);
+        // if (token != NULL) {
+        //     free(token);
+        // }
+        free(copy);
     }
     
     printf("\nSafe reports: %d\n", safe_reports);
