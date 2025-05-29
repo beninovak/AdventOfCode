@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../C-headers/read_file.h"
+#include "../../C-headers/_strings.h"
 
 int get_diff(int a, int b) {
     int diff = a - b;
@@ -80,35 +81,11 @@ int main () {
 
     int safe_reports = 0;
     for(int i = 0; i < file->line_count; i++) {
-        int num_count = 0;
-        for(int j = 0; j < strlen(file->lines[i]->start); j++) {
-            if (file->lines[i]->start[j] == ' ') {
-                num_count++;
-            }
-        }
-        num_count++; // One more string than spaces.
-        char** tokens = calloc(num_count, sizeof(char*));
-        char* token;
-        char* copy = calloc(strlen(file->lines[i]->start), sizeof(char));
-        strcpy(copy, file->lines[i]->start);
-        for(int k = 0; k < num_count; k++) {
-            if (k == 0) {
-                token = strtok(copy, " \n"); 
-            } else {
-                token = strtok(NULL, " \n");
-            }
-            tokens[k] = calloc(strlen(token), sizeof(char));
-            strcpy(tokens[k], token);
-        }
-        
-        if(is_line_unsafe(tokens, -1, num_count) == 0) {
+        _tokens* tokens = _strings_tokenize(file->lines[i]->start, ' ');
+        if(is_line_unsafe(tokens->tokens, -1, tokens->size) == 0) {
             safe_reports++; 
         }
-        free(tokens);
-        // if (token != NULL) {
-        //     free(token);
-        // }
-        free(copy);
+        _tokens_free(tokens);
     }
     _file_free(file);
     
