@@ -8,7 +8,7 @@ int main() {
 
     char  do_buffer[5] = "";
     char  dont_buffer[8] = "";
-    int   instruction_count = 64;
+    int   instruction_count = 32;
     long* do_instructions = calloc(instruction_count, sizeof(long));
     long* dont_instructions = calloc(instruction_count, sizeof(long));
     int   total_instructions = 0;
@@ -19,7 +19,7 @@ int main() {
             total_instructions++;
             if (total_instructions == instruction_count) {
                 instruction_count *= 2;
-                do_instructions = realloc(do_instructions, instruction_count);
+                do_instructions = realloc(do_instructions, instruction_count * sizeof(long));
             }
         } else {
             if (!feof(fptr)) {
@@ -31,7 +31,7 @@ int main() {
     }
 
     rewind(fptr);
-    instruction_count = 64;
+    instruction_count = 32;
     total_instructions = 0;
     while(fread(dont_buffer, sizeof(char), 7, fptr)) {
         if(strcmp(dont_buffer, "don't()") == 0) {
@@ -39,7 +39,7 @@ int main() {
             total_instructions++;
             if (total_instructions == instruction_count) {
                 instruction_count *= 2;
-                dont_instructions = realloc(dont_instructions, instruction_count);
+                dont_instructions = realloc(dont_instructions, instruction_count * sizeof(long));
             }
         } else {
             if (!feof(fptr)) {
