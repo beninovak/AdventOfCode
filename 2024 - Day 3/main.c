@@ -1,21 +1,87 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/types.h>
+
 
 int main() {
-    FILE* fptr = fopen("example.txt", "rb");
+    FILE* fptr = fopen("input.txt", "rb");
 
-    char instruction_buffer[7];
-    while(fread(instruction_buffer, sizeof(char), 7, fptr)) {
+    char  do_buffer[5] = "";
+    char  dont_buffer[8] = "";
+    int   instruction_count = 64;
+    long* do_instructions = calloc(instruction_count, sizeof(long));
+    long* dont_instructions = calloc(instruction_count, sizeof(long));
+    int   total_instructions = 0;
 
+    while(fread(do_buffer, sizeof(char), 4, fptr)) {
+        if(strcmp(do_buffer, "do()") == 0) {
+            do_instructions[total_instructions] = ftell(fptr) - 4; // ftell() - 4 to account for fread() having moved the pointer.
+            total_instructions++;
+            if (total_instructions == instruction_count) {
+                instruction_count *= 2;
+                do_instructions = realloc(do_instructions, instruction_count);
+            }
+        } else {
+            if (!feof(fptr)) {
+                fseek(fptr, -3, SEEK_CUR);
+            } else {
+                break;
+            }
+        }
+    }
+
+    rewind(fptr);
+    instruction_count = 64;
+    total_instructions = 0;
+    while(fread(dont_buffer, sizeof(char), 7, fptr)) {
+        if(strcmp(dont_buffer, "don't()") == 0) {
+            dont_instructions[total_instructions] = ftell(fptr) - 7;  // ftell() - 7 to account for fread() having moved the pointer.
+            total_instructions++;
+            if (total_instructions == instruction_count) {
+                instruction_count *= 2;
+                dont_instructions = realloc(dont_instructions, instruction_count);
+            }
+        } else {
+            if (!feof(fptr)) {
+                fseek(fptr, -6, SEEK_CUR);
+            } else {
+                break;
+            }
+        }
     }
     rewind(fptr);
+    fseek(fptr, 0, SEEK_SET);
 
+    printf("\nDo: ");
+    for(int i = 0; i < instruction_count;i++) {
+        printf("%ld ", do_instructions[i]);
+    }
+
+    printf("\nDon't: ");
+    for(int i = 0; i < instruction_count;i++) {
+        printf("%ld ", dont_instructions[i]);
+    }
+    
     long total = 0;
-    char buffer[4];
+    char buffer[5] = "";
+    int current_position;
+    int closest_do, closest_dont;
     while(fread(buffer, sizeof(char), 4, fptr)) {
         if (strcmp(buffer, "mul(") == 0) {
+            closest_do = closest_dont = 0;
+            current_position = ftell(fptr) - 4;
+                
+            for (int i = 0; i < instruction_count; i++) {
+                if (do_instructions[i] == 0 || do_instructions[i] > current_position) break;
+                closest_do = do_instructions[i];
+            }
+
+            for (int i = 0; i < instruction_count; i++) {
+                if (dont_instructions[i] == 0 || dont_instructions[i] > current_position) break;
+                closest_dont = dont_instructions[i];
+            }
+            if (closest_dont > closest_do) continue;
+
             char ch, last_ch;
             char num[3] = ""; // Numbers can be 1-3 digit as per the instructions.
             int consecutive_digits = 0;
@@ -69,8 +135,9 @@ int main() {
         }
     }
 
-    printf("Total: %ld\n", total);
-
-    free(fptr);
+    printf("\nTotal: %ld\n", total);
+    free(do_instructions);
+    free(dont_instructions);
+    fclose(fptr);
     return 0;
 }
