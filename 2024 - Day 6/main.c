@@ -11,7 +11,7 @@ int main() {
     int positions_count = 64;
     int** visited_positions = calloc(positions_count, sizeof(int*));
     for (int i = 0; i < positions_count; i++) {
-        visited_positions[i] = calloc(2, sizeof(int));
+        visited_positions[i] = calloc(3, sizeof(int));
     }
 
     int X, Y;
@@ -93,6 +93,7 @@ int main() {
                 printf("\n%d %d", Y, X);
                 visited_positions[visited_positions_count][0] = Y;
                 visited_positions[visited_positions_count][1] = X;
+                visited_positions[visited_positions_count][2] = direction;
                 visited_positions_count++;
 
                 if (visited_positions_count == positions_count) {
@@ -102,9 +103,8 @@ int main() {
                         printf("Bl bula brt!");
                     } else {
                         for(int r = visited_positions_count; r < positions_count; r++) {
-                            visited_positions[r] = calloc(2, sizeof(int));
+                            visited_positions[r] = calloc(3, sizeof(int));
                         }
-                        // free(val);
                     }
                 }
             }
@@ -113,5 +113,11 @@ int main() {
 
     free(visited_positions);
     printf("\nVisited positions: %d\n", visited_positions_count);
+    
+    
+    for(int i = 0; i < visited_positions_count; i++) {
+        // TODO - go through visited positions and call the above while loop(from a function?).
+    }
+
     return 0;
 }
