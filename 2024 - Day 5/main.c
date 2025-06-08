@@ -4,17 +4,36 @@
 #include "../../C-headers/read_file.h"
 #include "../../C-headers/_strings.h"
 
+int** page_order_rules;
+int page_order_rules_size;
+
+int _qsort_comparator(const void* tok1, const void* tok2) {
+    int num1 = atoi(*(const char**)tok1);
+    int num2 = atoi(*(const char**)tok2);
+    for(int i = 0; i < page_order_rules_size; i++) {
+        if ((page_order_rules[i][0] == num1 && page_order_rules[i][1] == num2) || (page_order_rules[i][1] == num1 && page_order_rules[i][0] == num2)) {
+            if (num1 == page_order_rules[i][0]) {
+                return -1;
+            } else if (num1 == page_order_rules[i][1]) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+    return 0;
+}
+
 int main() {
 
-    FILE* fptr = fopen("example.txt", "rb");
+    FILE* fptr = fopen("input.txt", "rb");
     _file* file = file_read(fptr);
     fclose(fptr);
 
-    int** page_order_rules;
     int continue_from;
     for(int i = 0; i < file->line_count; i++) {
         if (file->lines[i]->size == 1 && file->lines[i]->start[0] == '\n') {
-            page_order_rules = calloc(i, sizeof(int*));
+            page_order_rules_size = i;
+            page_order_rules = calloc(page_order_rules_size, sizeof(int*));
             continue_from = i + 1;
             break;
         }
@@ -30,8 +49,8 @@ int main() {
         token = NULL;
     }
 
-    long corrent_updates_sum = 0;
-    long incorrent_updates_sum = 0;
+    long correct_updates_sum = 0;
+    long incorrect_updates_sum = 0;
     int token_rows = file->line_count - continue_from;
     _tokens** tokens = (_tokens**)calloc(token_rows, sizeof(_tokens*));
     for(int i = 0; i < token_rows; i++) {
@@ -45,24 +64,18 @@ int main() {
             for(int p = 0; p < continue_from - 1; p++) {
                 if (page_order_rules[p][1] == num1 && page_order_rules[p][0] == num2) { // If numbers are in the wrong order
                     is_valid = 0;
-                    // TODO - reorder all incorrect updates, not just two tokens at a time. qsort??
-                    //break;
-                    // char* temp = calloc(tokens[i]->size, sizeof(char));
-                    // strcpy(temp, tokens[i]->tokens[t]);
-                    // strcpy(tokens[i]->tokens[t], tokens[i]->tokens[t+1]);
-                    // strcpy(tokens[i]->tokens[t+1], temp);
-                    // free(temp);
+                    break;
                 }
             }
-            // if (is_valid == 0) break;
         }
 
         if (is_valid == 1) {
-            printf("Corrent: %d - %s\n", (tokens[i]->size / 2) + 1, tokens[i]->tokens[(tokens[i]->size / 2)]);
-            corrent_updates_sum += atoi(tokens[i]->tokens[(tokens[i]->size / 2)]); // Add middle tokens
+            printf("Correct: %d - %s\n", (tokens[i]->size / 2) + 1, tokens[i]->tokens[(tokens[i]->size / 2)]);
+            correct_updates_sum += atoi(tokens[i]->tokens[(tokens[i]->size / 2)]); // Add middle tokens
         } else {
+            qsort(tokens[i]->tokens, tokens[i]->size, sizeof(char*), _qsort_comparator);
             printf("Incorrect: %d - %s\n", (tokens[i]->size / 2) + 1, tokens[i]->tokens[(tokens[i]->size / 2)]);
-            incorrent_updates_sum += atoi(tokens[i]->tokens[(tokens[i]->size / 2)]); // Add middle tokens
+            incorrect_updates_sum += atoi(tokens[i]->tokens[(tokens[i]->size / 2)]); // Add middle tokens
         }
         _tokens_free(tokens[i]);
     }
@@ -70,7 +83,7 @@ int main() {
 
     _file_free(file);
 
-    printf("\nCorrect sum: %lu\n", corrent_updates_sum);
-    printf("\nIncorrect sum: %lu\n", incorrent_updates_sum);
+    printf("\nCorrect sum: %lu\n", correct_updates_sum);
+    printf("Incorrect sum: %lu\n", incorrect_updates_sum);
     return 0;
 }
