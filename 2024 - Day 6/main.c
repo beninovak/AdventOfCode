@@ -89,9 +89,10 @@ void walk_guard(_file* file, int Y, int X, int direction, int column_width) {
 }
 
 int walk_guard_obstacle(_file* file, int Y, int X, int direction, int column_width) {
+    int count = 0;
     char ch;
     int guard_out_of_bounds = 0;
-    while(1) {
+    while(count < 10000) {
         switch(direction) {
             case 1:
                 Y--;
@@ -139,21 +140,15 @@ int walk_guard_obstacle(_file* file, int Y, int X, int direction, int column_wid
                     direction = 1;
                     break;
             }
-        } else {
-            for(int i = 0; i < visited_positions_count; i++) {
-                if (visited_positions[i][0] == Y && visited_positions[i][1] == X && visited_positions[i][2] == direction) {
-                    return 1; // Meaning the guard is stuck in a loop.
-                }
-            }
-        }
-
-        // TODO - don't count routes that visit the same position and WOULD have gone out of bounds.
+        } 
+        count++;
     }
+    return 1;
 }
 
 int main() {
 
-    FILE* fptr = fopen("example.txt", "rb");
+    FILE* fptr = fopen("input.txt", "rb");
     _file* file = file_read(fptr);
     fclose(fptr);
 
