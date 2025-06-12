@@ -66,7 +66,6 @@ void walk_guard(_file* file, int Y, int X, int direction, int column_width) {
             }
 
             if (repeated_position == 0) {
-                printf("\n%d %d", Y, X);
                 visited_positions[visited_positions_count][0] = Y;
                 visited_positions[visited_positions_count][1] = X;
                 visited_positions[visited_positions_count][2] = direction;
@@ -189,7 +188,6 @@ int main() {
         file->lines[visited_positions[i+1][0]]->start[visited_positions[i+1][1]] = '#';
         if (walk_guard_obstacle(file, visited_positions[i][0], visited_positions[i][1], visited_positions[i][2], column_width) == 1) {
             possible_locations_for_obstacle++;
-            printf("\n%d %d", visited_positions[i+1][0], visited_positions[i+1][1]);
         }
         file->lines[visited_positions[i+1][0]]->start[visited_positions[i+1][1]] = '.';
     }
