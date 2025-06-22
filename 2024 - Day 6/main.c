@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../C-headers/read_file.h"
+#include "../../C-headers/file_read.h"
 
 int positions_count = 64;
 int** visited_positions;
