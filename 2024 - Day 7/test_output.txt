@@ -1,0 +1,78 @@
+10 19 
+Checking target: 190, last: 19 -> Divisible and not done!
+Checking target: 10, last: 10 -> Last and good!
+
+---------------------- New total: 190 ----------------------
+
+81 40 27 
+Checking target: 3267, last: 27 -> Divisible and not done!
+Checking target: 121, last: 40 -> Not divisible, checking subtraction!
+Checking target: 81, last: 81 -> Last and good!
+
+---------------------- New total: 3457 ----------------------
+
+17 5 
+Checking target: 83, last: 5 -> Not divisible, checking subtraction!
+Checking target: 78, last: 17 -> Not divisible, returning cuz last!
+
+---------------------- New total: 3457 ----------------------
+
+15 6 
+Checking target: 156, last: 6 -> Divisible and not done!
+Checking target: 26, last: 15 -> Not divisible, returning cuz last!
+Checking target: 150, last: 15
+Returning at bottom!
+
+---------------------- New total: 3457 ----------------------
+
+6 8 6 15 
+Checking target: 7290, last: 15 -> Divisible and not done!
+Checking target: 486, last: 6 -> Divisible and not done!
+Checking target: 81, last: 8 -> Not divisible, checking subtraction!
+Checking target: 73, last: 6 -> Not divisible, returning cuz last!
+Checking target: 480, last: 8 -> Divisible and not done!
+Checking target: 60, last: 6
+Returning at bottom!
+Checking target: 472, last: 6 -> Not divisible, returning cuz last!
+Checking target: 7275, last: 6 -> Not divisible, checking subtraction!
+Checking target: 7269, last: 8 -> Not divisible, checking subtraction!
+Checking target: 7261, last: 6 -> Not divisible, returning cuz last!
+
+---------------------- New total: 3457 ----------------------
+
+16 10 13 
+Checking target: 161011, last: 13 -> Not divisible, checking subtraction!
+Checking target: 160998, last: 10 -> Not divisible, checking subtraction!
+Checking target: 160988, last: 16 -> Not divisible, returning cuz last!
+
+---------------------- New total: 3457 ----------------------
+
+17 8 14 
+Checking target: 192, last: 14 -> Not divisible, checking subtraction!
+Checking target: 178, last: 8 -> Not divisible, checking subtraction!
+Checking target: 170, last: 17
+Returning at bottom!
+
+---------------------- New total: 3457 ----------------------
+
+9 7 18 13 
+Checking target: 21037, last: 13 -> Not divisible, checking subtraction!
+Checking target: 21024, last: 18 -> Divisible and not done!
+Checking target: 1168, last: 7 -> Not divisible, checking subtraction!
+Checking target: 1161, last: 9
+Returning at bottom!
+Checking target: 21006, last: 7 -> Not divisible, checking subtraction!
+Checking target: 20999, last: 9 -> Not divisible, returning cuz last!
+
+---------------------- New total: 3457 ----------------------
+
+11 6 16 20 
+Checking target: 292, last: 20 -> Not divisible, checking subtraction!
+Checking target: 272, last: 16 -> Divisible and not done!
+Checking target: 17, last: 6 -> Not divisible, checking subtraction!
+Checking target: 11, last: 11 -> Last and good!
+
+---------------------- New total: 3749 ----------------------
+
+
+Total: 3749
